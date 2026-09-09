@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Semgrep
+.semgrep/
+.semgrep_logs/
+*.sarif
+
+# Measurement output
+out/
+results.json
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,6 @@
+rules:
+  - id: tqa-smoke-test
+    languages: [go]
+    severity: INFO
+    message: Smoke test rule.
+    pattern: fmt.Println(...)
