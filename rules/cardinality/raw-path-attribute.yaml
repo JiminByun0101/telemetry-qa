@@ -1,0 +1,41 @@
+rules:
+  - id: tqa-card-raw-path-attribute-go
+    languages: [go]
+    severity: WARNING
+    message: >-
+      Raw request path is used as an attribute value. Paths like
+      /users/12345 embed a request-specific identifier, which becomes a
+      new dimension per unique value if consumed as a metric label. Use
+      the router's matched route pattern (/users/{id}) instead. If this
+      value is only ever attached to a trace span (not a metric), this
+      finding is likely a false positive per OTel semantic conventions.
+    metadata:
+      defect-id: C003
+      category: reliability
+      subcategory: cardinality
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: attribute.String(..., $R.URL.Path)
+      - pattern: attribute.String(..., $R.RequestURI)
+      - pattern: attribute.String(..., $R.URL.String())
+      - pattern: attribute.Key(...).String($R.URL.Path)
+
+  - id: tqa-card-raw-path-attribute-py
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Raw request path is used as an attribute value. If this value is
+      consumed as a metric label, it creates a new dimension per unique
+      path. Use the framework's matched route pattern instead. If this
+      value is only ever attached to a trace span, this finding is
+      likely a false positive per OTel semantic conventions.
+    metadata:
+      defect-id: C003
+      category: reliability
+      subcategory: cardinality
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: $SPAN.set_attribute(..., $REQ.path)
+      - pattern: $SPAN.set_attribute(..., $REQ.full_path)
+      - pattern: $SPAN.set_attribute(..., $REQ.url.path)
+    
