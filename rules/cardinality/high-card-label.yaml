@@ -1,0 +1,54 @@
+rules:
+  - id: tqa-card-high-card-label-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      Metric label $LABEL can take effectively unbounded distinct values.
+      Each additional label multiplies the number of time series, leading to
+      Prometheus TSDB memory growth and OOM. Replace with a bounded label
+      (route, method, status) or move this identifier to logs/traces instead.
+    metadata:
+      defect-id: C001
+      category: reliability
+      subcategory: cardinality
+      confidence: HIGH
+      impact: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: prometheus.NewCounterVec(..., []string{..., $LABEL, ...})
+          - pattern: prometheus.NewGaugeVec(..., []string{..., $LABEL, ...})
+          - pattern: prometheus.NewHistogramVec(..., []string{..., $LABEL, ...})
+          - pattern: prometheus.NewSummaryVec(..., []string{..., $LABEL, ...})
+          - pattern: promauto.NewCounterVec(..., []string{..., $LABEL, ...})
+          - pattern: promauto.NewGaugeVec(..., []string{..., $LABEL, ...})
+          - pattern: promauto.NewHistogramVec(..., []string{..., $LABEL, ...})
+      - metavariable-regex:
+          metavariable: $LABEL
+          regex: (?i)^"?(user_?id|userid|uid|customer_id|account_id|request_id|req_id|trace_id|span_id|correlation_id|session_id|sid|email|phone|ip|ip_address|remote_addr|uuid|guid|hash|timestamp|ts|time|created_at|url|path|full_path|query|referer)"?$
+      - focus-metavariable: $LABEL
+
+  - id: tqa-card-high-card-label-py
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Metric label $LABEL can take effectively unbounded distinct values.
+      Replace with a bounded label or move this identifier to logs/traces.
+    metadata:
+      defect-id: C001
+      category: reliability
+      subcategory: cardinality
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: Counter(..., [..., $LABEL, ...], ...)
+          - pattern: Gauge(..., [..., $LABEL, ...], ...)
+          - pattern: Histogram(..., [..., $LABEL, ...], ...)
+          - pattern: Summary(..., [..., $LABEL, ...], ...)
+          - pattern: Counter(..., labelnames=[..., $LABEL, ...], ...)
+          - pattern: Gauge(..., labelnames=[..., $LABEL, ...], ...)
+          - pattern: Histogram(..., labelnames=[..., $LABEL, ...], ...)
+          - pattern: Summary(..., labelnames=[..., $LABEL, ...], ...)
+      - metavariable-regex:
+          metavariable: $LABEL
+          regex: (?i)^['"]?(user_?id|userid|uid|customer_id|account_id|request_id|req_id|trace_id|span_id|correlation_id|session_id|sid|email|phone|ip|ip_address|remote_addr|uuid|guid|hash|timestamp|ts|time|created_at|url|path|full_path|query|referer)['"]?$
+      - focus-metavariable: $LABEL
