@@ -1,0 +1,39 @@
+rules: 
+  - id: tqa-card-timestamp-label-value-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      Label value is constructed from a timestamp or UUID at call time.
+      Prometheus already records the scrape timestamp; embedding time or a
+      random identifier in a label value creates a new time series on every
+      observation.
+    metadata:
+      defect-id: C002
+      category: reliability
+      subcategory: cardinality
+      confidence: HIGH
+    pattern-either:
+      - pattern: $M.WithLabelValues(..., time.Now().Format(...), ...)
+      - pattern: $M.WithLabelValues(..., time.Now().String(), ...)
+      - pattern: $M.WithLabelValues(..., strconv.FormatInt(time.Now().Unix(), ...), ...)
+      - pattern: $M.WithLabelValues(..., fmt.Sprint(time.Now()), ...)
+      - pattern: $M.WithLabelValues(..., uuid.New().String(), ...)
+      - pattern: $M.WithLabelValues(..., uuid.NewString(), ...)
+
+  - id: tqa-card-timestamp-label-value-py
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Label value is constructed from a timestamp or UUID at call time.
+      This creates a new time series on every observation.
+    metadata:
+      defect-id: C002
+      category: reliability
+      subcategory: cardinality
+      confidence: HIGH
+    pattern-either:
+      - pattern: $M.labels(..., str(datetime.now()), ...)
+      - pattern: $M.labels(..., datetime.now().isoformat(), ...)
+      - pattern: $M.labels(..., str(time.time()), ...)
+      - pattern: $M.labels(..., str(uuid.uuid4()), ...)
+      - pattern: $M.labels(..., uuid.uuid4().hex, ...)
