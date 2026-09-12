@@ -1,0 +1,29 @@
+{
+  "defects": [
+    {
+      "id": "C001",
+      "file": "demo-go/metrics/registry.go",
+      "line": 14,
+      "note": "user_id label on HTTPRequestsTotal, direct promauto call"
+    },
+    {
+      "id": "C001",
+      "file": "demo-go/metrics/registry.go",
+      "line": 36,
+      "note": "user_id label on APICallsTotal, registered via wrapper function",
+      "hidden_behind_wrapper": true
+    },
+    {
+      "id": "C002",
+      "file": "demo-go/handler/payment.go",
+      "line": 17,
+      "note": "timestamp used directly as label value"
+    },
+    {
+      "id": "C002",
+      "file": "demo-go/handler/payment.go",
+      "line": 22,
+      "note": "uuid used directly as label value"
+    }
+  ]
+}

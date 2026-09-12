@@ -246,5 +246,8 @@ Detects `tracer.start_span()` (manual API) without a corresponding `.end()` call
 ```
 (append one line per day, after running scripts/measure.py)
 
-YYYY-MM-DD: <what was added> — defects N / TP n / FP n (recall X%, precision Y%)
+YYYY-MM-DD: <what was added> - defects N / TP n / FP n (recall X%, precision Y%)
 ```
+
+- 2026-09-07 C001 only: defects 2 / TP 1 / FP 0 (recall 50.0%, precision 100.0%)
+- 2026-09-07 C001+C002: defects 4 / TP 3 / FP 0 (recall 75.0%, precision 100.0%)
