@@ -16,14 +16,20 @@
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 17,
+      "line": 19,
       "note": "timestamp used directly as label value"
     },
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 22,
+      "line": 24,
       "note": "uuid used directly as label value"
+    },
+    {
+      "id": "C003",
+      "file": "demo-go/handler/payment.go",
+      "line": 34,
+      "note": "raw request path used as attribute instead of route pattern"
     }
   ]
 }

@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 var paymentAttempts = prometheus.NewCounterVec(
@@ -25,4 +27,14 @@ func recordPaymentBad2() {
 // NOTE: clean - bounded values only
 func recordPaymentGood(status string) {
 	paymentAttempts.WithLabelValues("card", status).Inc()
+}
+
+// NOTE: C003 - raw request path used as attribute instead of route pattern
+func tagRequestBad(r *http.Request) {
+	attribute.String("http.target", r.URL.Path)
+}
+
+// NOTE: clean - normalized route pattern, not the raw path
+func tagRequestGood(routePattern string) {
+	attribute.String("http.route", routePattern)
 }

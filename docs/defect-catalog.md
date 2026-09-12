@@ -251,3 +251,4 @@ YYYY-MM-DD: <what was added> - defects N / TP n / FP n (recall X%, precision Y%)
 
 - 2026-09-07 C001 only: defects 2 / TP 1 / FP 0 (recall 50.0%, precision 100.0%)
 - 2026-09-07 C001+C002: defects 4 / TP 3 / FP 0 (recall 75.0%, precision 100.0%)
+- 2026-09-07 C001+C002+C003 (cardinality complete): defects 5 / TP 4 / FP 0 (recall 80.0%, precision 100.0%)
