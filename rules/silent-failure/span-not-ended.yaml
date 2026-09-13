@@ -1,0 +1,25 @@
+rules:
+  - id: tqa-silent-span-not-ended-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      A span is started but never ended in this function. An unterminated span is never flushed to the exporter, so the trace for that request never appears in the backend, and the span object leaks in memory. Add defer $SPAN.End() immediately after Start.
+    metadata:
+      defect-id: S001
+      category: reliability
+      subcategory: silent-failure
+      confidence: MEDIUM
+    patterns:
+      - pattern: $CTX, $SPAN := $TRACER.Start(...)
+      - pattern-not-inside: |
+          func $F(...) $RET {
+            ...
+            defer $SPAN.End()
+            ...
+          }
+      - pattern-not-inside: |
+          func $F(...) $RET {
+            ...
+            $SPAN.End()
+            ...
+          }
