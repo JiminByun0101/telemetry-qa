@@ -1,0 +1,50 @@
+rules:
+  - id: tqa-silent-error-not-recorded-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      An error is handled in a function that owns a span, but neither span.RecordError(err) nor span.SetStatus(codes.Error, ...) is called. RecordError alone leaves the span status as Unset, so the trace UI still shows success even though the request failed, error-rate metrics stay at zero, and no alert fires. Call both span.RecordError(err) and span.SetStatus(codes.Error, err.Error()) when handling the error in the span-owning function.
+    metadata:
+      defect-id: S002
+      category: reliability
+      subcategory: silent-failure
+      confidence: MEDIUM
+      impact: HIGH
+    patterns:
+      - pattern-inside: |
+          func $F(...) $RET {
+            ...
+            $CTX, $SPAN := $TRACER.Start(...)
+            ...
+          }
+      - pattern: |
+          if $ERR != nil {
+            ...
+          }
+      - pattern-not-inside: |
+          func $F(...) $RET {
+            ...
+            $CTX, $SPAN := $TRACER.Start(...)
+            ...
+            if $ERR != nil {
+              ...
+              $SPAN.RecordError(...)
+              ...
+            }
+            ...
+          }
+      - pattern-not-inside: |
+          func $F(...) $RET {
+            ...
+            $CTX, $SPAN := $TRACER.Start(...)
+            ...
+            if $ERR != nil {
+              ...
+              $SPAN.SetStatus(...)
+              ...
+            }
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $ERR
+          regex: (?i)^\w*err\w*$
