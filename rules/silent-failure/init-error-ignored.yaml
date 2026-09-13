@@ -1,0 +1,19 @@
+rules:
+  - id: tqa-silent-otel-init-error-ignored-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      OpenTelemetry initialization error is discarded. If exporter or provider creation fails, the service still starts normally, but no telemetry is ever emitted and nothing signals this failure. Check the error and at minimum log it, or fail startup.
+    metadata:
+      defect-id: S003
+      category: reliability
+      subcategory: silent-failure
+      confidence: HIGH
+    pattern-either:
+      - pattern: $X, _ := otlptracegrpc.New(...)
+      - pattern: $X, _ := otlptracehttp.New(...)
+      - pattern: $X, _ := otlpmetricgrpc.New(...)
+      - pattern: $X, _ := otlpmetrichttp.New(...)
+      - pattern: $X, _ := stdouttrace.New(...)
+      - pattern: $X, _ := resource.New(...)
+      - pattern: $X, _ := resource.Merge(...)
