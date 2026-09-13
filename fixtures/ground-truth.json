@@ -16,20 +16,32 @@
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 19,
+      "line": 27,
       "note": "timestamp used directly as label value"
     },
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 24,
+      "line": 32,
       "note": "uuid used directly as label value"
     },
     {
       "id": "C003",
       "file": "demo-go/handler/payment.go",
-      "line": 34,
+      "line": 42,
       "note": "raw request path used as attribute instead of route pattern"
+    },
+    {
+      "id": "P001",
+      "file": "demo-go/handler/payment.go",
+      "line": 52,
+      "note": "card number logged via structured field"
+    },
+    {
+      "id": "P002",
+      "file": "demo-go/handler/payment.go",
+      "line": 58,
+      "note": "PaymentRequest struct dumped whole via %+v"
     }
   ]
 }
