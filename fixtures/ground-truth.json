@@ -42,6 +42,18 @@
       "file": "demo-go/handler/payment.go",
       "line": 58,
       "note": "PaymentRequest struct dumped whole via %+v"
+    },
+    {
+      "id": "P003",
+      "file": "demo-python/payment.py",
+      "line": 11,
+      "note": "full local scope logged in except block, includes card_number"
+    },
+    {
+      "id": "P004",
+      "file": "demo-python/payment.py",
+      "line": 24,
+      "note": "obviously-invalid RRN literal used as seed data"
     }
   ]
 }
