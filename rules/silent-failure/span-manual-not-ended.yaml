@@ -1,0 +1,23 @@
+rules:
+  - id: tqa-silent-span-manual-not-ended-py
+    languages: [python]
+    severity: ERROR
+    message: >-
+      A span created via start_span() is never ended. Unlike the context manager form, start_span() requires an explicit .end() call or being wrapped in a with statement. An unterminated span never reaches the exporter, so the trace for this operation never appears in the backend. Prefer tracer.start_as_current_span() as a context manager unless manual lifecycle control is specifically needed.
+    metadata:
+      defect-id: S004
+      category: reliability
+      subcategory: silent-failure
+      confidence: MEDIUM
+    patterns:
+      - pattern: $SPAN = $TRACER.start_span(...)
+      - pattern-not-inside: |
+          def $F(...):
+            ...
+            $SPAN.end()
+            ...
+      - pattern-not-inside: |
+          def $F(...):
+            ...
+            with $SPAN:
+              ...
