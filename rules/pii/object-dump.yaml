@@ -1,0 +1,36 @@
+rules:
+  - id: tqa-pii-object-dump-go
+    languages: [go]
+    severity: WARNING
+    message: >-
+      An entire object or struct is being logged. What gets logged is not controlled by this logging line itself but by whatever fields exist on the struct at call time. Adding a new field later can silently start leaking it through logging code that was never touched. Select specific fields explicitly instead.
+    metadata:
+      defect-id: P002
+      category: security
+      subcategory: pii
+      confidence: MEDIUM
+    pattern-either:
+      - pattern-regex: (log\.Printf|fmt\.Sprintf)\(\s*"[^"]*%\+v[^"]*"
+      - pattern-regex: (log\.Printf|fmt\.Sprintf)\(\s*"[^"]*%#v[^"]*"
+      - pattern: slog.Any($KEY, $REQ)
+      - pattern: zap.Any($KEY, $REQ)
+
+  - id: tqa-pii-object-dump-py
+    languages: [python]
+    severity: WARNING
+    message: >-
+      An entire request or dict object is being logged. Whatever fields exist on the object at call time get logged, including ones added later without touching this code. Select specific fields explicitly instead.
+    metadata:
+      defect-id: P002
+      category: security
+      subcategory: pii
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: $LOG.info(..., $REQ.__dict__, ...)
+      - pattern: $LOG.info(..., vars($REQ), ...)
+      - pattern: $LOG.info(..., locals(), ...)
+      - pattern: $LOG.debug(..., locals(), ...)
+      - pattern: $LOG.info(..., $REQ.headers, ...)
+      - pattern: $LOG.info(..., $REQ.body, ...)
+      - pattern: $LOG.info(..., $REQ.form, ...)
+      - pattern: $LOG.info(..., $REQ.cookies, ...)

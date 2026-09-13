@@ -1,0 +1,20 @@
+rules:
+  - id: tqa-pii-exception-context-dump-py
+    languages: [python]
+    severity: WARNING
+    message: >-
+      An exception handler logs the entire local scope. Whatever local variables happen to exist at the point of failure get logged, which can include request bodies or credentials that were in scope but unrelated to the error itself.
+    metadata:
+      defect-id: P003
+      category: security
+      subcategory: pii
+      confidence: MEDIUM
+    patterns:
+      - pattern-inside: |
+          try:
+              ...
+          except ...:
+              ...
+      - pattern-either:
+          - pattern: $LOG.exception(..., locals(), ...)
+          - pattern: $LOG.error(..., locals(), ...)
