@@ -160,6 +160,7 @@ Regex-based detection of literal values shaped like a Korean resident registrati
 
 **Known limitation**: no checksum validation (RRN weighted checksum, card Luhn algorithm). This is a precision/recall tradeoff — narrowing the regex further would reduce both false positives and true positive coverage. Listed as a v2 roadmap item (post-processing checksum validator).
 
+**Additional limitation**: the card-number regex matches on a 16-digit substring, so a longer digit sequence (e.g. a 20-digit tracking number) that happens to contain 16 consecutive matching digits can still trigger a false positive. Verified via fixture; not fixed in v1.
 ---
 
 ## S001 — Span not ended (Go)

@@ -1,0 +1,33 @@
+rules:
+  - id: tqa-pii-rrn-literal
+    languages: [go, python]
+    severity: ERROR
+    message: >-
+      A literal matching the Korean resident registration number format
+      was found in source. Even in test fixtures or seed data, this
+      becomes tracked once committed and can leak through logs or error
+      messages. Use an obviously invalid placeholder or move it to
+      external configuration.
+    metadata:
+      defect-id: P004
+      category: security
+      subcategory: pii
+      confidence: MEDIUM
+      region: KR
+    pattern-regex: \b\d{6}\s?-\s?[1-4]\d{6}\b
+
+  - id: tqa-pii-card-number-literal
+    languages: [go, python]
+    severity: WARNING
+    message: >-
+      A 16-digit literal shaped like a card number was found in source.
+      No checksum (Luhn) validation is performed, so this may be a false
+      positive (order numbers, transaction IDs, etc. can match the same
+      shape). If this is a known test number, suppress with a nosemgrep
+      comment referencing this rule id.
+    metadata:
+      defect-id: P004
+      category: security
+      subcategory: pii
+      confidence: LOW
+    pattern-regex: \b(?:\d{4}[\s-]?){3}\d{4}\b
