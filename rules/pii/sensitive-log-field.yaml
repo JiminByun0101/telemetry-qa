@@ -1,0 +1,48 @@
+rules:
+  - id: tqa-pii-sensitive-log-field-go
+    languages: [go]
+    severity: ERROR
+    message: >-
+      Log field $KEY contains a credential or unique-identifier value.
+      Logs are shipped to a central collector, viewed by multiple people,
+      and retained long-term. Replace with a hashed or masked value, or
+      remove the field.
+    metadata:
+      defect-id: P001
+      category: security
+      subcategory: pii
+      confidence: HIGH
+      impact: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: slog.String($KEY, ...)
+          - pattern: slog.Any($KEY, ...)
+          - pattern: zap.String($KEY, ...)
+          - pattern: zap.Any($KEY, ...)
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: (?i)^["']?(?!.*(_hash|_type|_count|_policy|_expiry|_verified|_domain|_last4|_changed_at|_method|_provider|_id|_status|_brand|_length))(password|passwd|pwd|secret|api_?key|token|access_token|refresh_token|id_token|authorization|auth_header|bearer|private_key|secret_key|credentials?|ssn|resident_number|rrn|jumin|card_?number|cardno|pan|cvv|cvc|account_number|passport_number|driver_license)["']?$
+      - focus-metavariable: $KEY
+
+  - id: tqa-pii-sensitive-log-field-py
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Log field $KEY contains a credential or unique-identifier value.
+      Replace with a hashed or masked value, or remove the field.
+    metadata:
+      defect-id: P001
+      category: security
+      subcategory: pii
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: '$LOG.info(..., extra={..., $KEY: ..., ...}, ...)'
+          - pattern: '$LOG.warning(..., extra={..., $KEY: ..., ...}, ...)'
+          - pattern: '$LOG.error(..., extra={..., $KEY: ..., ...}, ...)'
+          - pattern: $LOG.info(..., $KEY=$V, ...)
+          - pattern: $LOG.error(..., $KEY=$V, ...)
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: (?i)^["']?(?!.*(_hash|_type|_count|_policy|_expiry|_verified|_domain|_last4|_changed_at|_method|_provider|_id|_status|_brand|_length))(password|passwd|pwd|secret|api_?key|token|access_token|refresh_token|id_token|authorization|auth_header|bearer|private_key|secret_key|credentials?|ssn|resident_number|rrn|jumin|card_?number|cardno|pan|cvv|cvc|account_number|passport_number|driver_license)["']?$
+      - focus-metavariable: $KEY
