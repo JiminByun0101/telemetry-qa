@@ -16,44 +16,68 @@
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 27,
+      "line": 30,
       "note": "timestamp used directly as label value"
     },
     {
       "id": "C002",
       "file": "demo-go/handler/payment.go",
-      "line": 32,
+      "line": 35,
       "note": "uuid used directly as label value"
     },
     {
       "id": "C003",
       "file": "demo-go/handler/payment.go",
-      "line": 42,
+      "line": 45,
       "note": "raw request path used as attribute instead of route pattern"
     },
     {
       "id": "P001",
       "file": "demo-go/handler/payment.go",
-      "line": 52,
+      "line": 55,
       "note": "card number logged via structured field"
     },
     {
       "id": "P002",
       "file": "demo-go/handler/payment.go",
-      "line": 58,
+      "line": 61,
       "note": "PaymentRequest struct dumped whole via %+v"
+    },
+    {
+      "id": "S002",
+      "file": "demo-go/handler/payment.go",
+      "line": 80,
+      "note": "card validation error logged but not recorded on the owning span"
+    },
+    {
+      "id": "S003",
+      "file": "demo-go/telemetry/init.go",
+      "line": 13,
+      "note": "exporter creation error discarded via blank identifier"
+    },
+    {
+      "id": "S001",
+      "file": "demo-go/telemetry/init.go",
+      "line": 31,
+      "note": "span started, never ended"
     },
     {
       "id": "P003",
       "file": "demo-python/payment.py",
-      "line": 11,
+      "line": 14,
       "note": "full local scope logged in except block, includes card_number"
     },
     {
       "id": "P004",
       "file": "demo-python/payment.py",
-      "line": 24,
+      "line": 27,
       "note": "obviously-invalid RRN literal used as seed data"
+    },
+    {
+      "id": "S004",
+      "file": "demo-python/payment.py",
+      "line": 32,
+      "note": "manual span created via start_span, never ended"
     }
   ]
 }
