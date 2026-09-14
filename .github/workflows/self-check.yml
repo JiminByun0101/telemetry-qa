@@ -1,0 +1,47 @@
+name: Self Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rule-tests:
+    name: Rule unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install semgrep
+
+      - name: Run rule tests
+        run: semgrep --test --config rules/ rules/
+
+  self-scan:
+    name: Scan this repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install semgrep
+
+      - name: Scan (excluding rule fixtures and demo fixtures)
+        run: |
+          semgrep --config rules/ \
+                  --exclude 'fixtures/' \
+                  --exclude 'rules/' \
+                  --error \
+                  --severity ERROR \
+                  .
