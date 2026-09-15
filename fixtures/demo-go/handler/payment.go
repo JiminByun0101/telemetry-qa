@@ -1,16 +1,13 @@
 package handler
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
 	"log/slog"
 )
 
@@ -20,9 +17,8 @@ var paymentAttempts = prometheus.NewCounterVec(
 )
 
 type PaymentRequest struct {
-	OrderID    string
-	Amount     int64
-	CardNumber string
+	OrderID string
+	Amount  int64
 }
 
 // NOTE: C002 - timestamp used directly as a label value, new series every call
@@ -50,11 +46,6 @@ func tagRequestGood(routePattern string) {
 	attribute.String("http.route", routePattern)
 }
 
-// NOTE: P001 - card number logged directly via structured field
-func logCardBad(cardNumber string) {
-	slog.Info("charge attempt", slog.String("card_number", cardNumber))
-}
-
 // NOTE: P002 - request struct dumped whole; adding a field later
 // silently starts leaking it through this exact line
 func logRequestBad(req PaymentRequest) {
@@ -64,36 +55,4 @@ func logRequestBad(req PaymentRequest) {
 // NOTE: clean - only non-sensitive fields selected explicitly
 func logRequestGood(req PaymentRequest) {
 	slog.Info("processing payment", slog.String("order_id", req.OrderID))
-}
-
-// NOTE: S002 - the defining example for this product. The card is
-// validated, validation fails, the failure is logged - but the span
-// itself is never marked as an error. In the trace backend this
-// request shows up as a successful ProcessPayment span even though
-// the payment failed. Error-rate metrics and alerts based on span
-// status will not catch this.
-func ProcessPayment(ctx context.Context, req PaymentRequest) error {
-	tracer := otel.Tracer("payments")
-	ctx, span := tracer.Start(ctx, "ProcessPayment")
-	defer span.End()
-
-	if err := validateCard(ctx, req.CardNumber); err != nil {
-		log.Printf("card validation failed: %v", err)
-		return err
-	}
-	return nil
-}
-
-// NOTE: clean - both RecordError and SetStatus are called
-func ProcessPaymentGood(ctx context.Context, req PaymentRequest) error {
-	tracer := otel.Tracer("payments")
-	ctx, span := tracer.Start(ctx, "ProcessPaymentGood")
-	defer span.End()
-
-	if err := validateCard(ctx, req.CardNumber); err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-		return err
-	}
-	return nil
 }
