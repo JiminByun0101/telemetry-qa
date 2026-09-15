@@ -1,7 +1,7 @@
 rules:
   - id: tqa-pii-object-dump-go
     languages: [go]
-    severity: WARNING
+    severity: ERROR
     message: >-
       An entire object or struct is being logged. What gets logged is not controlled by this logging line itself but by whatever fields exist on the struct at call time. Adding a new field later can silently start leaking it through logging code that was never touched. Select specific fields explicitly instead.
     metadata:
