@@ -57,3 +57,8 @@ func logRequestBad(req PaymentRequest) {
 func logRequestGood(req PaymentRequest) {
 	slog.Info("processing payment", slog.String("order_id", req.OrderID))
 }
+
+// NOTE: P001 - card number logged directly via structured field
+func logCardBad(req PaymentRequest) {
+	slog.Info("charge attempt", slog.String("card_number", req.CardNumber))
+}
