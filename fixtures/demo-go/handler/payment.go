@@ -17,8 +17,9 @@ var paymentAttempts = prometheus.NewCounterVec(
 )
 
 type PaymentRequest struct {
-	OrderID string
-	Amount  int64
+	OrderID    string
+	Amount     int64
+	CardNumber string
 }
 
 // NOTE: C002 - timestamp used directly as a label value, new series every call
